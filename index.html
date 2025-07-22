@@ -192,8 +192,9 @@
         { action: 'login', email, password },
         res => {
           if (res.status === 'success') {
-            alert('Logged in successfully!');
-            toggleModal('loginModal', false);
+            // Redirect to homepage.html
+            window.location.href = 'homepage.html';
+            return;
           } else if (res.status === 'not_found') {
             alert('Email not found. Please sign up.');
           } else if (res.status === 'wrong_password') {
