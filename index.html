@@ -216,7 +216,7 @@
         { action: 'signup', name, email, password },
         res => {
           if (res.status === 'created') {
-            alert('Account created successfully! Redirecting in 3 seconds...');
+            alert('Account created successfully!');
             toggleModal('signupModal', false);
             setTimeout(() => {
               window.location.href = 'homepage.html';
