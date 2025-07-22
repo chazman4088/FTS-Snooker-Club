@@ -216,9 +216,11 @@
         { action: 'signup', name, email, password },
         res => {
           if (res.status === 'created') {
-            alert('Account created! You can now log in.');
+            alert('Account created successfully! Redirecting in 3 seconds...');
             toggleModal('signupModal', false);
-            toggleModal('loginModal', true);
+            setTimeout(() => {
+              window.location.href = 'homepage.html';
+            }, 3000);
           } else if (res.status === 'exists') {
             if (confirm('Email already exists. Log in?')) {
               toggleModal('signupModal', false);
