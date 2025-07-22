@@ -218,8 +218,7 @@
           if (res.status === 'created') {
             alert('Account created successfully!');
             toggleModal('signupModal', false);
-            setTimeout(() => {
-              window.location.href = 'homepage.html';
+            window.location.href = 'homepage.html';
           } else if (res.status === 'exists') {
             if (confirm('Email already exists. Log in?')) {
               toggleModal('signupModal', false);
