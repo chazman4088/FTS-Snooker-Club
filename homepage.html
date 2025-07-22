@@ -191,6 +191,9 @@
   <script>
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwvtwMIIJAGuZgFqz23R7J08pIEnNAyqn7c_Ks8VpAkybq795R04xNrF6SQVAvS6kbJ/exec';
 
+    // track last render count to avoid unwanted scroll resets
+    let lastMsgCount = 0;
+
     function jsonpRequest(params, cb) {
       const cbName = 'cb_' + Math.random().toString(36).slice(2);
       window[cbName] = data => {
@@ -225,7 +228,7 @@
     document.getElementById('messagesBtn').onclick = () => {
       toggleModal('messagesModal', true);
       loadMessages();
-      window.msgInterval = setInterval(loadMessages, 100);
+      window.msgInterval = setInterval(loadMessages, 5000);
     };
 
     document.getElementById('overlay').onclick = () => {
@@ -243,6 +246,9 @@
     function loadMessages() {
       jsonpRequest({ action: 'getMessages' }, data => {
         const wrap = document.getElementById('msgsContainer');
+        // check if user is at bottom before redraw
+        const atBottom = wrap.scrollHeight - wrap.clientHeight - wrap.scrollTop < 5;
+
         wrap.innerHTML = '';
         data.forEach(msg => {
           const d = new Date(msg.timestamp);
@@ -259,7 +265,12 @@
             </div>`;
           wrap.appendChild(outer);
         });
-        wrap.scrollTop = wrap.scrollHeight;
+
+        // only scroll if new messages came in or if user was already at bottom
+        if (data.length !== lastMsgCount || atBottom) {
+          wrap.scrollTop = wrap.scrollHeight;
+        }
+        lastMsgCount = data.length;
       });
     }
 
