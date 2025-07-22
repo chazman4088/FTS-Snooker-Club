@@ -137,7 +137,6 @@
       margin-bottom: 0.25rem;
     }
     .msg-bubble {
-      position: relative;
       padding: 0.5rem 0.75rem;
       background: #dcf8c6;
       border-radius: 8px;
@@ -153,9 +152,10 @@
       margin-bottom: 0.5rem;
     }
     .msg-bubble .time {
-      position: absolute;
-      bottom: 0.25rem;
-      right: 0.5rem;
+      position: static;
+      display: block;
+      text-align: right;
+      margin-top: 0.25rem;
       font-size: 0.75rem;
       color: #666;
     }
