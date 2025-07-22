@@ -14,6 +14,7 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
+      position: relative;
     }
     header h1 {
       font-family: 'Merriweather', serif;
@@ -69,6 +70,34 @@
       position: absolute; top: 0.5rem; right: 0.75rem;
       cursor: pointer; font-size: 1.2rem; color: #666;
     }
+
+    /* Loader overlay */
+    #loader {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255,255,255,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 1000;
+    }
+    #loader .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid #ccc;
+      border-top-color: #004d19;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 0.75rem;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    #loader .text {
+      font-size: 1rem;
+      color: #004d19;
+    }
   </style>
 </head>
 <body>
@@ -82,6 +111,12 @@
   </div>
 
   <div id="overlay"></div>
+
+  <!-- Loader -->
+  <div id="loader">
+    <div class="spinner"></div>
+    <div class="text">Loading...</div>
+  </div>
 
   <!-- Login Modal -->
   <div id="loginModal" class="modal">
@@ -130,6 +165,13 @@
       document.body.appendChild(script);
     }
 
+    function showLoader() {
+      document.getElementById('loader').style.display = 'flex';
+    }
+    function hideLoader() {
+      document.getElementById('loader').style.display = 'none';
+    }
+
     function toggleModal(id, show) {
       document.getElementById('overlay').style.display = show ? 'block' : 'none';
       document.getElementById(id).style.display = show ? 'block' : 'none';
@@ -151,14 +193,22 @@
       e.preventDefault();
       const email = document.getElementById('loginEmail').value.trim();
       const pwd   = document.getElementById('loginPassword').value;
+      showLoader();
       jsonpRequest({ action:'login', email, password: pwd }, res => {
+        hideLoader();
         if (res.status === 'success') {
           localStorage.setItem('playerName', res.name);
           window.location.href = 'homepage.html';
         }
-        else if (res.status === 'not_found') alert('Email not found. Please sign up.');
-        else if (res.status === 'wrong_password') alert('Incorrect password.');
-        else alert('Error: ' + res.message);
+        else if (res.status === 'not_found') {
+          alert('Email not found. Please sign up.');
+        }
+        else if (res.status === 'wrong_password') {
+          alert('Incorrect password.');
+        }
+        else {
+          alert('Error: ' + res.message);
+        }
       });
     };
 
@@ -168,7 +218,9 @@
       const name  = document.getElementById('fullName').value.trim();
       const email = document.getElementById('signupEmail').value.trim();
       const pwd   = document.getElementById('signupPassword').value;
+      showLoader();
       jsonpRequest({ action:'signup', name, email, password: pwd }, res => {
+        hideLoader();
         if (res.status === 'created') {
           localStorage.setItem('playerName', res.name);
           window.location.href = 'homepage.html';
@@ -181,7 +233,9 @@
             toggleModal('signupModal', false);
           }
         }
-        else alert('Error: ' + res.message);
+        else {
+          alert('Error: ' + res.message);
+        }
       });
     };
   </script>
