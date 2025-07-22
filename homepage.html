@@ -225,7 +225,7 @@
     document.getElementById('messagesBtn').onclick = () => {
       toggleModal('messagesModal', true);
       loadMessages();
-      window.msgInterval = setInterval(loadMessages, 5000);
+      window.msgInterval = setInterval(loadMessages, 100);
     };
 
     document.getElementById('overlay').onclick = () => {
