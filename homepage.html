@@ -1,1 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fitzwilliam Snooker Club – Home</title>
+  <style>
+    /* Basic reset & typography */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #f5f1e9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+    header h1 {
+      font-family: 'Merriweather', serif;
+      font-size: 2rem;
+      color: #004d19;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
 
+    /* Vertical button list */
+    .btn-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 360px;
+    }
+    .btn-list button {
+      background: #c29500;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      margin: 0.5rem 0;
+      width: 100%;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
+    .btn-list button:hover {
+      background: #a17a00;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1 id="welcome">Welcome</h1>
+  </header>
+
+  <div class="btn-list">
+    <button id="tournamentsBtn">My tournaments</button>
+    <button id="newsBtn">News</button>
+    <button id="messagesBtn">Messages</button>
+  </div>
+
+  <script>
+    // Read the player's name from localStorage (set at login/signup)
+    const playerName = localStorage.getItem('playerName');
+    if (!playerName) {
+      // Not logged in – send back to login page
+      window.location.href = 'index.html';
+    } else {
+      document.getElementById('welcome').textContent =
+        `Welcome, ${playerName}`;
+    }
+
+    // (Optional) Wire up your buttons:
+    document.getElementById('tournamentsBtn').onclick = () => {
+      // e.g. window.location.href = 'tournaments.html';
+    };
+    document.getElementById('newsBtn').onclick = () => {
+      // e.g. window.location.href = 'news.html';
+    };
+    document.getElementById('messagesBtn').onclick = () => {
+      // e.g. window.location.href = 'messages.html';
+    };
+  </script>
+
+</body>
+</html>
