@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fitzwilliam Snooker Club</title>
+  <style>
+    /* Basic reset */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #f5f1e9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    header h1 {
+      font-family: 'Merriweather', serif;
+      font-size: 2.5rem;
+      color: #004d19;
+      margin-bottom: 2rem;
+    }
+    .btn-container button {
+      background: #c29500;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      margin: 0 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
+    .btn-container button:hover {
+      background: #a17a00;
+    }
+    /* Overlay & modal styles */
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+    }
+    .modal {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 2rem;
+      border-radius: 6px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      display: none;
+    }
+    .modal h2 {
+      margin-bottom: 1rem;
+      color: #004d19;
+    }
+    .modal form {
+      display: flex;
+      flex-direction: column;
+    }
+    .modal form label {
+      margin: 0.5rem 0 0.25rem;
+      font-weight: bold;
+    }
+    .modal form input {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .modal form button {
+      margin-top: 1rem;
+      background: #004d19;
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
+    .modal form button:hover {
+      background: #003712;
+    }
+    .modal .close {
+      position: absolute;
+      top: 0.5rem; right: 0.75rem;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Fitzwilliam Snooker Club</h1>
+  </header>
+
+  <div class="btn-container">
+    <button id="signupBtn">Sign up</button>
+    <button id="loginBtn">Log in</button>
+  </div>
+
+  <div id="overlay"></div>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal">
+    <span class="close" data-target="loginModal">&times;</span>
+    <h2>Log in</h2>
+    <form id="loginForm">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" required />
+
+      <label for="loginPassword">Password</label>
+      <input type="password" id="loginPassword" required />
+
+      <button type="submit">Log in</button>
+    </form>
+  </div>
+
+  <!-- Signup Modal -->
+  <div id="signupModal" class="modal">
+    <span class="close" data-target="signupModal">&times;</span>
+    <h2>Sign up</h2>
+    <form id="signupForm">
+      <label for="fullName">Full Name</label>
+      <input type="text" id="fullName" required />
+
+      <label for="signupEmail">Email</label>
+      <input type="email" id="signupEmail" required />
+
+      <label for="signupPassword">Password</label>
+      <input type="password" id="signupPassword" required />
+
+      <button type="submit">Sign up</button>
+    </form>
+  </div>
+
+  <script>
+    // Replace this with your published Apps Script URL
+    const WEB_APP_URL = 'https://script.google.com/macros/s/WEB_APP_DEPLOY_ID/exec';
+
+    // Utility to show/hide modals
+    function toggleModal(id, show) {
+      document.getElementById('overlay').style.display = show ? 'block' : 'none';
+      document.getElementById(id).style.display = show ? 'block' : 'none';
+    }
+
+    // Open modals
+    document.getElementById('loginBtn').onclick  = () => toggleModal('loginModal', true);
+    document.getElementById('signupBtn').onclick = () => toggleModal('signupModal', true);
+
+    // Close modals
+    document.querySelectorAll('.close').forEach(el => {
+      el.onclick = () => toggleModal(el.dataset.target, false);
+    });
+    document.getElementById('overlay').onclick = () => {
+      document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+      document.getElementById('overlay').style.display = 'none';
+    };
+
+    // Handle login
+    document.getElementById('loginForm').onsubmit = async e => {
+      e.preventDefault();
+      const email    = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const res = await fetch(WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'login', email, password })
+      }).then(r => r.json());
+
+      if (res.status === 'success') {
+        alert('Logged in successfully!');
+        toggleModal('loginModal', false);
+      } else if (res.status === 'not_found') {
+        alert('Email not found. Please sign up.');
+      } else if (res.status === 'wrong_password') {
+        alert('Incorrect password.');
+      } else {
+        alert('Error: ' + res.message);
+      }
+    };
+
+    // Handle signup
+    document.getElementById('signupForm').onsubmit = async e => {
+      e.preventDefault();
+      const name     = document.getElementById('fullName').value.trim();
+      const email    = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      const res = await fetch(WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'signup', name, email, password })
+      }).then(r => r.json());
+
+      if (res.status === 'created') {
+        alert('Account created! You can now log in.');
+        toggleModal('signupModal', false);
+        toggleModal('loginModal', true);
+      } else if (res.status === 'exists') {
+        if (confirm('Email already exists. Log in?')) {
+          toggleModal('signupModal', false);
+          toggleModal('loginModal', true);
+        } else {
+          toggleModal('signupModal', false);
+        }
+      } else {
+        alert('Error: ' + res.message);
+      }
+    };
+  </script>
+</body>
+</html>
