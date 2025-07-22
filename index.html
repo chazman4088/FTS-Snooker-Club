@@ -35,62 +35,39 @@
     .btn-container button:hover {
       background: #a17a00;
     }
-    /* Overlay & modal styles */
     #overlay {
-      position: fixed;
-      top: 0; left: 0;
+      position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
       background: rgba(0,0,0,0.5);
       display: none;
     }
     .modal {
-      position: fixed;
-      top: 50%; left: 50%;
+      position: fixed; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      background: white;
-      padding: 2rem;
-      border-radius: 6px;
-      width: 90%;
-      max-width: 400px;
+      background: white; padding: 2rem;
+      border-radius: 6px; width: 90%; max-width: 400px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
       display: none;
     }
-    .modal h2 {
-      margin-bottom: 1rem;
-      color: #004d19;
-    }
-    .modal form {
-      display: flex;
-      flex-direction: column;
-    }
+    .modal h2 { margin-bottom: 1rem; color: #004d19; }
+    .modal form { display: flex; flex-direction: column; }
     .modal form label {
-      margin: 0.5rem 0 0.25rem;
-      font-weight: bold;
+      margin: 0.5rem 0 0.25rem; font-weight: bold;
     }
     .modal form input {
-      padding: 0.5rem;
-      border: 1px solid #ccc;
+      padding: 0.5rem; border: 1px solid #ccc;
       border-radius: 4px;
     }
     .modal form button {
-      margin-top: 1rem;
-      background: #004d19;
-      color: white;
-      border: none;
-      padding: 0.75rem;
-      cursor: pointer;
-      border-radius: 4px;
+      margin-top: 1rem; background: #004d19;
+      color: white; border: none; padding: 0.75rem;
+      cursor: pointer; border-radius: 4px;
       transition: background 0.2s ease;
     }
-    .modal form button:hover {
-      background: #003712;
-    }
+    .modal form button:hover { background: #003712; }
     .modal .close {
-      position: absolute;
-      top: 0.5rem; right: 0.75rem;
-      cursor: pointer;
-      font-size: 1.2rem;
-      color: #666;
+      position: absolute; top: 0.5rem; right: 0.75rem;
+      cursor: pointer; font-size: 1.2rem; color: #666;
     }
   </style>
 </head>
@@ -113,10 +90,8 @@
     <form id="loginForm">
       <label for="loginEmail">Email</label>
       <input type="email" id="loginEmail" required />
-
       <label for="loginPassword">Password</label>
       <input type="password" id="loginPassword" required />
-
       <button type="submit">Log in</button>
     </form>
   </div>
@@ -128,109 +103,86 @@
     <form id="signupForm">
       <label for="fullName">Full Name</label>
       <input type="text" id="fullName" required />
-
       <label for="signupEmail">Email</label>
       <input type="email" id="signupEmail" required />
-
       <label for="signupPassword">Password</label>
       <input type="password" id="signupPassword" required />
-
       <button type="submit">Sign up</button>
     </form>
   </div>
 
   <script>
-    // Your Apps Script JSONP endpoint
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwvtwMIIJAGuZgFqz23R7J08pIEnNAyqn7c_Ks8VpAkybq795R04xNrF6SQVAvS6kbJ/exec';
+    const WEB_APP_URL = 'https://script.google.com/macros/s/YOUR_NEW_DEPLOY_ID/exec';
 
-    /**
-     * JSONP helper: injects <script> tag with callback
-     */
     function jsonpRequest(params, callback) {
-      const callbackName = 'cb_' + Math.random().toString(36).substr(2);
-      window[callbackName] = data => {
-        delete window[callbackName];
+      const cbName = 'cb_' + Math.random().toString(36).substr(2);
+      window[cbName] = data => {
+        delete window[cbName];
         document.body.removeChild(script);
         callback(data);
       };
-
-      params.callback = callbackName;
-      const query = Object.entries(params)
-        .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
+      params.callback = cbName;
+      const qs = Object.entries(params)
+        .map(([k,v]) => `${k}=${encodeURIComponent(v)}`)
         .join('&');
-
       const script = document.createElement('script');
-      script.src = `${WEB_APP_URL}?${query}`;
+      script.src = `${WEB_APP_URL}?${qs}`;
       document.body.appendChild(script);
     }
 
-    // Utility to show/hide modals
     function toggleModal(id, show) {
       document.getElementById('overlay').style.display = show ? 'block' : 'none';
       document.getElementById(id).style.display = show ? 'block' : 'none';
     }
 
-    // Open modals
     document.getElementById('loginBtn').onclick  = () => toggleModal('loginModal', true);
     document.getElementById('signupBtn').onclick = () => toggleModal('signupModal', true);
 
-    // Close modals
-    document.querySelectorAll('.close').forEach(el => {
-      el.onclick = () => toggleModal(el.dataset.target, false);
-    });
+    document.querySelectorAll('.close').forEach(el =>
+      el.onclick = () => toggleModal(el.dataset.target, false)
+    );
     document.getElementById('overlay').onclick = () => {
       document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
       document.getElementById('overlay').style.display = 'none';
     };
 
-    // Handle login via JSONP
+    // Login
     document.getElementById('loginForm').onsubmit = function(e) {
       e.preventDefault();
-      const email    = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value;
-      jsonpRequest(
-        { action: 'login', email, password },
-        res => {
-          if (res.status === 'success') {
-            // Redirect to homepage.html
-            window.location.href = 'homepage.html';
-            return;
-          } else if (res.status === 'not_found') {
-            alert('Email not found. Please sign up.');
-          } else if (res.status === 'wrong_password') {
-            alert('Incorrect password.');
-          } else {
-            alert('Error: ' + res.message);
-          }
+      const email = document.getElementById('loginEmail').value.trim();
+      const pwd   = document.getElementById('loginPassword').value;
+      jsonpRequest({ action:'login', email, password: pwd }, res => {
+        if (res.status === 'success') {
+          localStorage.setItem('playerName', res.name);
+          window.location.href = 'homepage.html';
         }
-      );
+        else if (res.status === 'not_found') alert('Email not found. Please sign up.');
+        else if (res.status === 'wrong_password') alert('Incorrect password.');
+        else alert('Error: ' + res.message);
+      });
     };
 
-    // Handle signup via JSONP
+    // Signup
     document.getElementById('signupForm').onsubmit = function(e) {
       e.preventDefault();
-      const name     = document.getElementById('fullName').value.trim();
-      const email    = document.getElementById('signupEmail').value.trim();
-      const password = document.getElementById('signupPassword').value;
-      jsonpRequest(
-        { action: 'signup', name, email, password },
-        res => {
-          if (res.status === 'created') {
-            alert('Account created successfully!');
+      const name  = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const pwd   = document.getElementById('signupPassword').value;
+      jsonpRequest({ action:'signup', name, email, password: pwd }, res => {
+        if (res.status === 'created') {
+          localStorage.setItem('playerName', res.name);
+          window.location.href = 'homepage.html';
+        }
+        else if (res.status === 'exists') {
+          if (confirm('Email already exists. Log in?')) {
             toggleModal('signupModal', false);
-            window.location.href = 'homepage.html';
-          } else if (res.status === 'exists') {
-            if (confirm('Email already exists. Log in?')) {
-              toggleModal('signupModal', false);
-              toggleModal('loginModal', true);
-            } else {
-              toggleModal('signupModal', false);
-            }
+            toggleModal('loginModal', true);
           } else {
-            alert('Error: ' + res.message);
+            toggleModal('signupModal', false);
           }
         }
-      );
+        else alert('Error: ' + res.message);
+      });
     };
   </script>
 </body>
