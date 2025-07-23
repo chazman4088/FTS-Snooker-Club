@@ -119,9 +119,6 @@
       }
     }
   </style>
-
-  <!-- CryptoJS for AES encryption -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body>
   <header>
@@ -174,17 +171,24 @@
 
     function jsonpRequest(params, callback) {
       const cbName = 'cb_' + Math.random().toString(36).substr(2);
+      params.callback = cbName;
+
+      // guard entries
+      const entries = Object.entries(params || {});
+      const qs = entries
+        .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
+        .join('&');
+
+      // create script before wiring up callback
+      const script = document.createElement('script');
+      script.src = `${WEB_APP_URL}?${qs}`;
+
       window[cbName] = data => {
         delete window[cbName];
         document.body.removeChild(script);
         callback(data);
       };
-      params.callback = cbName;
-      const qs = Object.entries(params)
-        .map(([k,v]) => `${k}=${encodeURIComponent(v)}`)
-        .join('&');
-      const script = document.createElement('script');
-      script.src = `${WEB_APP_URL}?${qs}`;
+
       document.body.appendChild(script);
     }
 
@@ -214,75 +218,47 @@
     // Login
     document.getElementById('loginForm').onsubmit = function(e) {
       e.preventDefault();
-      const rawEmail = document.getElementById('loginEmail').value.trim();
-      const rawPwd   = document.getElementById('loginPassword').value;
-
-      // derive a key from password
-      const key = CryptoJS.PBKDF2(rawPwd, 'some_salt', {
-        keySize: 256/32,
-        iterations: 1000
-      });
-
-      // encrypt before sending
-      const emailEnc    = CryptoJS.AES.encrypt(rawEmail, key).toString();
-      const passwordEnc = CryptoJS.AES.encrypt(rawPwd,    key).toString();
-
+      const email = document.getElementById('loginEmail').value.trim();
+      const pwd   = document.getElementById('loginPassword').value;
       showLoader();
-      jsonpRequest(
-        { action:'login', email: emailEnc, password: passwordEnc },
-        res => {
-          hideLoader();
-          if (res.status === 'success') {
-            localStorage.setItem('playerName', res.name);
-            window.location.href = 'homepage.html';
-          }
-          else if (res.status === 'not_found') {
-            alert('Email not found. Please sign up.');
-          }
-          else if (res.status === 'wrong_password') {
-            alert('Incorrect password.');
-          }
-          else alert('Error: ' + res.message);
+      jsonpRequest({ action:'login', email, password: pwd }, res => {
+        hideLoader();
+        if (res.status === 'success') {
+          localStorage.setItem('playerName', res.name);
+          window.location.href = 'homepage.html';
+        } else if (res.status === 'not_found') {
+          alert('Email not found. Please sign up.');
+        } else if (res.status === 'wrong_password') {
+          alert('Incorrect password.');
+        } else {
+          alert('Error: ' + res.message);
         }
-      );
+      });
     };
 
     // Signup
     document.getElementById('signupForm').onsubmit = function(e) {
       e.preventDefault();
-      const rawName  = document.getElementById('fullName').value.trim();
-      const rawEmail = document.getElementById('signupEmail').value.trim();
-      const rawPwd   = document.getElementById('signupPassword').value;
-
-      const key = CryptoJS.PBKDF2(rawPwd, 'some_salt', {
-        keySize: 256/32,
-        iterations: 1000
-      });
-
-      const nameEnc     = CryptoJS.AES.encrypt(rawName,  key).toString();
-      const emailEnc    = CryptoJS.AES.encrypt(rawEmail, key).toString();
-      const passwordEnc = CryptoJS.AES.encrypt(rawPwd,   key).toString();
-
+      const name  = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const pwd   = document.getElementById('signupPassword').value;
       showLoader();
-      jsonpRequest(
-        { action:'signup', name: nameEnc, email: emailEnc, password: passwordEnc },
-        res => {
-          hideLoader();
-          if (res.status === 'created') {
-            localStorage.setItem('playerName', res.name);
-            window.location.href = 'homepage.html';
+      jsonpRequest({ action:'signup', name, email, password: pwd }, res => {
+        hideLoader();
+        if (res.status === 'created') {
+          localStorage.setItem('playerName', res.name);
+          window.location.href = 'homepage.html';
+        } else if (res.status === 'exists') {
+          if (confirm('Email already exists. Log in?')) {
+            toggleModal('signupModal', false);
+            toggleModal('loginModal', true);
+          } else {
+            toggleModal('signupModal', false);
           }
-          else if (res.status === 'exists') {
-            if (confirm('Email already exists. Log in?')) {
-              toggleModal('signupModal', false);
-              toggleModal('loginModal', true);
-            } else {
-              toggleModal('signupModal', false);
-            }
-          }
-          else alert('Error: ' + res.message);
+        } else {
+          alert('Error: ' + res.message);
         }
-      );
+      });
     };
   </script>
 </body>
