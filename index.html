@@ -120,7 +120,7 @@
     }
   </style>
 
-  <!-- Include CryptoJS so CryptoJS.* calls resolve -->
+  <!-- Include CryptoJS on the client -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body>
@@ -172,17 +172,15 @@
   <script>
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwvtwMIIJAGuZgFqz23R7J08pIEnNAyqn7c_Ks8VpAkybq795R04xNrF6SQVAvS6kbJ/exec';
 
-    function jsonpRequest(params, callback) {
-      const cbName = 'cb_' + Math.random().toString(36).substr(2);
+    // ---- only this helper changed ----
+    function jsonpRequest(params = {}, callback) {
+      const cbName = 'cb_' + Math.random().toString(36).slice(2);
       params.callback = cbName;
 
-      // guard entries
-      const entries = Object.entries(params || {});
-      const qs = entries
+      const qs = Object.entries(params)
         .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
         .join('&');
 
-      // create script before wiring up callback
       const script = document.createElement('script');
       script.src = `${WEB_APP_URL}?${qs}`;
 
@@ -194,6 +192,7 @@
 
       document.body.appendChild(script);
     }
+    // ----------------------------------
 
     function showLoader() {
       document.getElementById('loader').style.display = 'flex';
@@ -224,13 +223,11 @@
       const rawEmail = document.getElementById('loginEmail').value.trim();
       const rawPwd   = document.getElementById('loginPassword').value;
 
-      // derive a key from password
+      // derive key & encrypt
       const key = CryptoJS.PBKDF2(rawPwd, 'some_salt', {
         keySize: 256/32,
         iterations: 1000
       });
-
-      // encrypt before sending
       const emailEnc    = CryptoJS.AES.encrypt(rawEmail, key).toString();
       const passwordEnc = CryptoJS.AES.encrypt(rawPwd,    key).toString();
 
@@ -264,7 +261,6 @@
         keySize: 256/32,
         iterations: 1000
       });
-
       const nameEnc     = CryptoJS.AES.encrypt(rawName,  key).toString();
       const emailEnc    = CryptoJS.AES.encrypt(rawEmail, key).toString();
       const passwordEnc = CryptoJS.AES.encrypt(rawPwd,   key).toString();
