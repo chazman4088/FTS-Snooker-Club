@@ -7,12 +7,12 @@
 
   <style>
     :root {
-      --page-bg:        #112216;    /* deep green page background */
+      --page-bg:        #112216;    /* deep green background */
       --btn-bg:         #000000;    /* black button background */
-      --btn-text:       #B2935C;    /* button text color */
-      --btn-bg-hover:   #333333;    /* slightly lighter on hover */
+      --btn-text:       #B2935C;    /* gold-ish text color */
+      --btn-bg-hover:   #333333;    /* slightly lighter hover */
       --btn-padding:    12px 24px;
-      --btn-radius:     4px;
+      --btn-radius:     20px;       /* pill shape */
       --font-stack:     'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
@@ -44,16 +44,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 20px;
+      padding: 20px 20px;  /* less top padding */
     }
 
     .center-button {
       margin-top: 20px;
     }
 
-    /* tighten space before the first button */
     .center-button:first-child {
-      margin-top: 10px;
+      margin-top: 0;       /* no gap above first button */
     }
 
     .btn {
