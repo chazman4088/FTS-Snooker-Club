@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Summer Snooker Ladder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: white;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 600px;
+    }
+    th, td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #444;
+    }
+    th {
+      background-color: #4CAF50;
+      font-size: 18px;
+    }
+    td {
+      font-size: 16px;
+    }
+    tr:nth-child(even) {
+      background-color: #1a1a1a;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+    .back-btn:hover {
+      background-color: #45a049;
+    }
+    /* modal */
+    #playerModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      align-items: center;
+      justify-content: center;
+    }
+    #playerModal .modal-content {
+      background: #222;
+      padding: 20px;
+      border-radius: 8px;
+      min-width: 280px;
+      color: white;
+      text-align: left;
+    }
+    #playerModal button {
+      margin-top: 10px;
+      padding: 6px 12px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    /* XP bar */
+    .xp-bar {
+      background: #444;
+      border-radius: 4px;
+      overflow: hidden;
+      height: 16px;
+      margin: 4px 0 10px;
+    }
+    .xp-fill {
+      background: #4CAF50;
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <h1>Summer Snooker Ladder</h1>
+
+  <table id="leaderboard">
+    <thead>
+      <tr>
+        <th>Position</th>
+        <th>Player</th>
+        <th>Wins</th>
+        <th>Losses</th>
+        <th>Handicap</th>
+        <th>XP</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="6">Loading...</td></tr>
+    </tbody>
+  </table>
+
+  <a href="index.html" class="back-btn">Back to Home</a>
+
+  <!-- Player Info Modal -->
+  <div id="playerModal">
+    <div class="modal-content">
+      <h2 id="modalName"></h2>
+      <p id="loadingText" style="margin:0 0 10px;">Loading player data...</p>
+      <p>Win rate: <span id="modalWinRate"></span>%</p>
+      <p>Avg pts/frame: <span id="modalAvg"></span></p>
+      <p>XP:</p>
+      <div class="xp-bar"><div id="modalXPBar" class="xp-fill"></div></div>
+      <p id="modalXPText"></p>
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const API = 'Enter App Script URL here';
+    
+    // XP thresholds per level: level1=50,2=100,3=150,...
+    function getLevelInfo(xp) {
+      const level = Math.floor(xp/50) + 1;
+      const prevReq = 50*(level-1);
+      const nextReq = 50*level;
+      const progress = ((xp - prevReq) / (nextReq - prevReq)) * 100;
+      return { level, progress };
+    }
+
+    function showLeaderboard(players) {
+      const tbody = document.querySelector('#leaderboard tbody');
+      if (!players || !players.length) {
+        tbody.innerHTML = '<tr><td colspan="6">No data available</td></tr>';
+        return;
+      }
+      tbody.innerHTML = players.map((p,i) => `
+        <tr>
+          <td>${i+1}</td>
+          <td class="playerName" data-name="${p.name}" style="cursor:pointer; color:#4CAF50;">
+            ${p.name}
+          </td>
+          <td>${p.wins}</td>
+          <td>${p.losses}</td>
+          <td>${p.handicap}</td>
+          <td>${p.xp}</td>
+        </tr>
+      `).join('');
+      document.querySelectorAll('.playerName').forEach(td => {
+        td.onclick = () => {
+          const name = td.dataset.name;
+          document.getElementById('modalName').textContent = name;
+          document.getElementById('loadingText').textContent = 'Loading player data...';
+          document.getElementById('modalWinRate').textContent = '';
+          document.getElementById('modalAvg').textContent = '';
+          document.getElementById('modalXPText').textContent = '';
+          document.getElementById('modalXPBar').style.width = '0%';
+          document.getElementById('playerModal').style.display = 'flex';
+
+          fetch(`${API}?player=${encodeURIComponent(name)}`)
+            .then(r => r.json())
+            .then(stats => {
+              document.getElementById('loadingText').textContent = '';
+              document.getElementById('modalWinRate').textContent = (stats.winRate*100).toFixed(1);
+              document.getElementById('modalAvg').textContent = stats.avgPointsPerFrame.toFixed(1);
+              const { level, progress } = getLevelInfo(stats.xp);
+              document.getElementById('modalXPBar').style.width = progress + '%';
+              document.getElementById('modalXPText').textContent = 
+                `Lvl ${level} (${stats.xp} XP)`;
+            })
+            .catch(console.error);
+        };
+      });
+    }
+
+    function closeModal() {
+      document.getElementById('playerModal').style.display = 'none';
+    }
+
+    function loadLeaderboard() {
+      const script = document.createElement('script');
+      script.src = API+'?callback=showLeaderboard';
+      document.body.appendChild(script);
+    }
+
+    window.onload = loadLeaderboard;
+  </script>
+</body>
+</html>
