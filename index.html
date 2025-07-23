@@ -7,10 +7,10 @@
 
   <style>
     :root {
-      --page-bg:       #112216;  /* updated background color */
-      --btn-bg:        #D4AF37;  /* gold text color from logo */
-      --btn-bg-hover:  #B89833;  /* slightly darker gold for hover */
-      --btn-text:      #0B3D0B;  /* dark green text inside buttons */
+      --page-bg:       #112216;  /* deep green background */
+      --btn-bg:        #D4AF37;  /* gold from logo text */
+      --btn-bg-hover:  #B89833;  /* darker gold hover */
+      --btn-text:      #0B3D0B;  /* dark green button text */
       --btn-padding:   12px 24px;
       --btn-radius:    4px;
       --font-stack:    'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -49,6 +49,11 @@
 
     .center-button {
       margin-top: 20px;
+    }
+
+    /* Reduce space before the very first button */
+    .center-button:first-child {
+      margin-top: 10px;
     }
 
     .btn {
