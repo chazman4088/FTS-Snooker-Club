@@ -7,12 +7,13 @@
 
   <style>
     :root {
-      --dark-green: #0b3d0b;
-      --gold:       #d4af37;
-      --gold-dark:  #b89833;
-      --btn-padding: 12px 24px;
-      --btn-radius: 4px;
-      --font-stack: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --page-bg:       #1e1e1e; /* matches the dark explorer background */
+      --btn-bg:        #d4d4d4; /* matches the light gray text color */
+      --btn-bg-hover:  #c0c0c0; /* slightly darker on hover */
+      --btn-text:      #1e1e1e; /* dark text inside buttons */
+      --btn-padding:   12px 24px;
+      --btn-radius:    4px;
+      --font-stack:    'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     *, *::before, *::after {
@@ -22,15 +23,15 @@
     body {
       margin: 0;
       font-family: var(--font-stack);
-      background-color: var(--dark-green);
-      color: var(--gold);
+      background-color: var(--page-bg);
+      color: var(--btn-bg);
       line-height: 1.5;
     }
 
     header {
       text-align: center;
       padding: 20px 0;
-      background-color: var(--dark-green);
+      background-color: var(--page-bg);
     }
 
     header img {
@@ -53,8 +54,8 @@
     .btn {
       display: inline-block;
       text-decoration: none;
-      background-color: var(--gold);
-      color: var(--dark-green);
+      background-color: var(--btn-bg);
+      color: var(--btn-text);
       padding: var(--btn-padding);
       border-radius: var(--btn-radius);
       font-size: 16px;
@@ -64,7 +65,7 @@
 
     .btn:hover,
     .btn:focus {
-      background-color: var(--gold-dark);
+      background-color: var(--btn-bg-hover);
       outline: none;
     }
 
@@ -78,7 +79,7 @@
 </head>
 <body>
   <header>
-    <!-- Logo sits in the same folder as index.html -->
+    <!-- adjust the filename if you rename your logo -->
     <img src="FTS Snooker Club Logo.jpg" alt="FTS Snooker Club Logo">
   </header>
 
