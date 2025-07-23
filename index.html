@@ -119,6 +119,9 @@
       }
     }
   </style>
+
+  <!-- CryptoJS for AES encryption -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body>
   <header>
@@ -211,47 +214,75 @@
     // Login
     document.getElementById('loginForm').onsubmit = function(e) {
       e.preventDefault();
-      const email = document.getElementById('loginEmail').value.trim();
-      const pwd   = document.getElementById('loginPassword').value;
-      showLoader();
-      jsonpRequest({ action:'login', email, password: pwd }, res => {
-        hideLoader();
-        if (res.status === 'success') {
-          localStorage.setItem('playerName', res.name);
-          window.location.href = 'homepage.html';
-        } else if (res.status === 'not_found') {
-          alert('Email not found. Please sign up.');
-        } else if (res.status === 'wrong_password') {
-          alert('Incorrect password.');
-        } else {
-          alert('Error: ' + res.message);
-        }
+      const rawEmail = document.getElementById('loginEmail').value.trim();
+      const rawPwd   = document.getElementById('loginPassword').value;
+
+      // derive a key from password
+      const key = CryptoJS.PBKDF2(rawPwd, 'some_salt', {
+        keySize: 256/32,
+        iterations: 1000
       });
+
+      // encrypt before sending
+      const emailEnc    = CryptoJS.AES.encrypt(rawEmail, key).toString();
+      const passwordEnc = CryptoJS.AES.encrypt(rawPwd,    key).toString();
+
+      showLoader();
+      jsonpRequest(
+        { action:'login', email: emailEnc, password: passwordEnc },
+        res => {
+          hideLoader();
+          if (res.status === 'success') {
+            localStorage.setItem('playerName', res.name);
+            window.location.href = 'homepage.html';
+          }
+          else if (res.status === 'not_found') {
+            alert('Email not found. Please sign up.');
+          }
+          else if (res.status === 'wrong_password') {
+            alert('Incorrect password.');
+          }
+          else alert('Error: ' + res.message);
+        }
+      );
     };
 
     // Signup
     document.getElementById('signupForm').onsubmit = function(e) {
       e.preventDefault();
-      const name  = document.getElementById('fullName').value.trim();
-      const email = document.getElementById('signupEmail').value.trim();
-      const pwd   = document.getElementById('signupPassword').value;
-      showLoader();
-      jsonpRequest({ action:'signup', name, email, password: pwd }, res => {
-        hideLoader();
-        if (res.status === 'created') {
-          localStorage.setItem('playerName', res.name);
-          window.location.href = 'homepage.html';
-        } else if (res.status === 'exists') {
-          if (confirm('Email already exists. Log in?')) {
-            toggleModal('signupModal', false);
-            toggleModal('loginModal', true);
-          } else {
-            toggleModal('signupModal', false);
-          }
-        } else {
-          alert('Error: ' + res.message);
-        }
+      const rawName  = document.getElementById('fullName').value.trim();
+      const rawEmail = document.getElementById('signupEmail').value.trim();
+      const rawPwd   = document.getElementById('signupPassword').value;
+
+      const key = CryptoJS.PBKDF2(rawPwd, 'some_salt', {
+        keySize: 256/32,
+        iterations: 1000
       });
+
+      const nameEnc     = CryptoJS.AES.encrypt(rawName,  key).toString();
+      const emailEnc    = CryptoJS.AES.encrypt(rawEmail, key).toString();
+      const passwordEnc = CryptoJS.AES.encrypt(rawPwd,   key).toString();
+
+      showLoader();
+      jsonpRequest(
+        { action:'signup', name: nameEnc, email: emailEnc, password: passwordEnc },
+        res => {
+          hideLoader();
+          if (res.status === 'created') {
+            localStorage.setItem('playerName', res.name);
+            window.location.href = 'homepage.html';
+          }
+          else if (res.status === 'exists') {
+            if (confirm('Email already exists. Log in?')) {
+              toggleModal('signupModal', false);
+              toggleModal('loginModal', true);
+            } else {
+              toggleModal('signupModal', false);
+            }
+          }
+          else alert('Error: ' + res.message);
+        }
+      );
     };
   </script>
 </body>
