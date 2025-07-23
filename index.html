@@ -4,30 +4,103 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FTS Snooker Club</title>
-  <link rel="stylesheet" href="style.css" />
+
+  <!-- Inlined CSS matching your logo's dark-green & gold palette -->
+  <style>
+    :root {
+      --dark-green: #0b3d0b;
+      --gold:       #d4af37;
+      --gold-dark:  #b89833;
+      --btn-padding: 12px 24px;
+      --btn-radius: 4px;
+      --font-stack: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-stack);
+      background-color: var(--dark-green);
+      color: var(--gold);
+      line-height: 1.5;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px 0;
+      background-color: var(--dark-green);
+    }
+
+    header img {
+      max-width: 300px;
+      width: 100%;
+      height: auto;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .center-button {
+      margin-top: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      background-color: var(--gold);
+      color: var(--dark-green);
+      padding: var(--btn-padding);
+      border-radius: var(--btn-radius);
+      font-size: 16px;
+      font-weight: bold;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    .btn:hover,
+    .btn:focus {
+      background-color: var(--gold-dark);
+      outline: none;
+    }
+
+    @media (max-width: 600px) {
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 <body>
   <header>
-    <h1>FTS Snooker Club</h1>
+    <!-- Replace the src with your actual logo path/filename -->
+    <img src="path/to/your-logo.png" alt="FTS Snooker Club Logo">
   </header>
+
   <main>
     <div class="center-button">
-      <a href="score.html" class="btn">Enter Score</a>
+      <a href="score.html" class="btn" aria-label="Enter Score">Enter Score</a>
     </div>
     <div class="center-button" style="margin-top: 20px;">
-      <a href="leaderboard.html" class="btn">Summer Snooker Ladder</a>
+      <a href="leaderboard.html" class="btn" aria-label="Summer Snooker Ladder">Summer Snooker Ladder</a>
     </div>
     <div class="center-button" style="margin-top: 20px;">
-      <a href="challenge.html" class="btn">Challenge Player</a>
+      <a href="challenge.html" class="btn" aria-label="Challenge Player">Challenge Player</a>
     </div>
     <div class="center-button" style="margin-top: 20px;">
-      <a href="highbreak.html" class="btn">High Breaks</a>
+      <a href="highbreak.html" class="btn" aria-label="High Breaks">High Breaks</a>
     </div>
     <div class="center-button" style="margin-top: 20px;">
-      <a href="dashboard.html" class="btn">Dashboard</a>
+      <a href="dashboard.html" class="btn" aria-label="Dashboard">Dashboard</a>
     </div>
     <div class="center-button" style="margin-top: 20px;">
-      <a href="Enter booking URL here" class="btn">Book a Table</a>
+      <a href="Enter booking URL here" class="btn" aria-label="Book a Table">Book a Table</a>
     </div>
   </main>
 </body>
