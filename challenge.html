@@ -3,29 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Challenge a Player - FTS Snooker Club</title>
+  <title>Challenge a Player – FTS Snooker Club</title>
   <style>
-    body {
+    /* Base Reset */
+    * {
       margin: 0;
-      background-color: #111;
-      color: white;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Page Background & Fonts */
+    body {
+      background: linear-gradient(to bottom right, #002b00, #003300);
+      color: #f5c700;
+      font-family: "Georgia", serif;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
+
+    /* Header */
     header {
-      background-color: #222;
-      border-bottom: 4px solid #4CAF50;
-      padding: 2rem 1rem;
+      background: linear-gradient(to bottom, #004400, #003300);
+      padding: 30px 0;
       text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
     header h1 {
-      margin: 0;
-      font-size: 2.4rem;
-      color: #4CAF50;
-      font-weight: bold;
+      font-size: 3rem;
+      color: #f5c700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
     }
+
+    /* Main Container */
     main {
       flex: 1;
       display: flex;
@@ -33,11 +44,13 @@
       align-items: center;
       padding: 3rem 1rem;
     }
+
+    /* Form */
     form {
-      background-color: #222;
+      background: #004400;
       padding: 2rem;
       border-radius: 12px;
-      box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+      box-shadow: 0 0 20px rgba(245, 199, 0, 0.5);
       max-width: 400px;
       width: 100%;
       margin-bottom: 2rem;
@@ -46,55 +59,54 @@
       text-align: center;
       margin-bottom: 1.5rem;
       font-weight: 700;
-      color: #4CAF50;
+      color: #f5c700;
     }
+
+    /* Labels */
     label {
       display: block;
       margin-top: 1.1rem;
       font-weight: 600;
       font-size: 1rem;
+      color: #f5c700;
     }
+
+    /* Inputs & Select */
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
     select {
       margin-top: 0.3rem;
       width: 100%;
       padding: 8px 10px;
       border-radius: 6px;
       border: none;
-      background-color: #333;
-      color: white;
+      background-color: #003300;
+      color: #f5c700;
       font-size: 1rem;
-      box-sizing: border-box;
     }
+
+    /* Submit Button */
     button {
       margin-top: 2rem;
       width: 100%;
-      background-color: #4CAF50;
-      border: none;
+      background: linear-gradient(to bottom, #f5c700, #d4af37);
+      border: 2px solid #f5c700;
       padding: 12px;
       border-radius: 10px;
       font-size: 1.2rem;
       font-weight: 700;
-      color: white;
+      color: #003300;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease-in-out;
     }
     button:hover {
-      background-color: #3e8e41;
+      background: linear-gradient(to bottom, #003300, #002400);
+      color: #f5c700;
+      transform: scale(1.05);
     }
-    .back-btn {
-      display: block;
-      width: 105px;
-      padding: 10px 20px;
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      font-weight: 700;
-      color: white;
-      text-align: 0 auto;
-      margin: 0 auto;
-      text-decoration: none;
-      border-radius: 10px;
-    }
+
+    /* Table Wrapper */
     .table-wrapper {
       width: 100%;
       overflow-x: auto;
@@ -111,25 +123,50 @@
       border: 1px solid #444;
       padding: 10px;
       text-align: left;
+      color: #f5c700;
     }
     th {
-      background-color: #222;
-      color: #4CAF50;
+      background-color: #003300;
     }
     tr:nth-child(even) {
-      background-color: #1a1a1a;
+      background-color: #002900;
     }
+
+    /* Clear Button */
     .clear-btn {
-      background-color: #e53935;
-      color: white;
+      background: #e53935;
+      color: #f5c700;
       border: none;
       padding: 6px 10px;
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
+      transition: background-color 0.3s ease, transform 0.3s ease;
     }
     .clear-btn:hover {
-      background-color: #c62828;
+      background: #c62828;
+      transform: scale(1.05);
+    }
+
+    /* Back to Home */
+    .back-btn {
+      display: inline-block;
+      margin: 0 auto 20px;
+      background: linear-gradient(to bottom, #f5c700, #d4af37);
+      border: 2px solid #f5c700;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #003300;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.3s ease-in-out;
+    }
+    .back-btn:hover {
+      background: linear-gradient(to bottom, #003300, #002400);
+      color: #f5c700;
+      transform: scale(1.05);
     }
   </style>
 </head>
@@ -137,6 +174,7 @@
   <header>
     <h1>FTS Snooker Club</h1>
   </header>
+
   <main>
     <form method="GET" action="challengeresult.html">
       <h2>Challenge a Player</h2>
@@ -200,74 +238,57 @@
       fetch(scriptURL, {
         method: "POST",
         body: formData
-      }).then(() => {
-        loadChallenges();
-      }).catch(() => {
-        alert("Error deleting challenge.");
-      });
+      })
+      .then(() => loadChallenges())
+      .catch(() => alert("Error deleting challenge."));
     }
 
     function showChallenges(data) {
       challengeData = data;
-
-      const tbody = document.querySelector('#challengeTable tbody');
+      const tbody = document.querySelector("#challengeTable tbody");
       if (!Array.isArray(data) || data.length === 0) {
         tbody.innerHTML = "<tr><td colspan='5'>No challenges found</td></tr>";
         return;
       }
-
       const rows = data.map(row => {
         const dueDateStr = formatDateString(row.dueDate);
-        const dueParts = dueDateStr.split('/');
-        const dueDate = new Date(`${dueParts[2]}-${dueParts[1]}-${dueParts[0]}`);
-        const today = new Date();
-        const diffDays = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+        const [day, month, year] = dueDateStr.split("/");
+        const dueDate = new Date(`${year}-${month}-${day}`);
+        const diffDays = Math.ceil((dueDate - new Date()) / (1000*60*60*24));
         let dueStyle = "";
-
-        if (diffDays < 0) {
-          dueStyle = 'style="background-color:#b71c1c;"';
-        } else if (diffDays <= 2) {
-          dueStyle = 'style="background-color:#ff9800;"';
-        }
-
+        if (diffDays < 0) dueStyle = 'style="background-color:#b71c1c;"';
+        else if (diffDays <= 2) dueStyle = 'style="background-color:#ff9800;"';
         return `
           <tr>
             <td>${row.player}</td>
             <td>${row.challengedBy}</td>
             <td>${formatDateString(row.date)}</td>
             <td ${dueStyle}>${dueDateStr}</td>
-            <td><button class="clear-btn" onclick="clearChallenge('${row.player}', '${row.challengedBy}')">Delete</button></td>
+            <td><button class="clear-btn" onclick="clearChallenge('${row.player}','${row.challengedBy}')">Delete</button></td>
           </tr>
         `;
       });
-
-      tbody.innerHTML = rows.join('');
+      tbody.innerHTML = rows.join("");
     }
 
     function loadChallenges() {
-      const script = document.createElement('script');
-      script.src = scriptURL + "?callback=showChallenges";
+      const script = document.createElement("script");
+      script.src = `${scriptURL}?callback=showChallenges`;
       document.body.appendChild(script);
     }
 
-    window.onload = function () {
+    window.onload = () => {
       loadChallenges();
 
-      const form = document.querySelector("form");
-      form.addEventListener("submit", function (e) {
+      document.querySelector("form").addEventListener("submit", e => {
         const selectedPlayer = document.getElementById("player").value;
         const thisWeek = new Date();
         const startOfWeek = new Date(thisWeek);
         startOfWeek.setDate(thisWeek.getDate() - thisWeek.getDay());
-
-        // Check if the player is already under challenge
-        const challengeCount = challengeData.filter(c => c.player === selectedPlayer).length;
-
-        if (challengeCount > 0) {
-          const confirmProceed = confirm(`${selectedPlayer} has already been challenged. Do you still want to proceed?`);
-          if (!confirmProceed) {
-            e.preventDefault();
-          }
+        const alreadyChallenged = challengeData.filter(c => c.player === selectedPlayer).length > 0;
+        if (alreadyChallenged) {
+          const ok = confirm(`${selectedPlayer} has already been challenged. Proceed anyway?`);
+          if (!ok) e.preventDefault();
         }
       });
     };
