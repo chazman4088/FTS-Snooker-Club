@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Submit Snooker Score - FTS Snooker Club</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #111;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #222;
+      border-bottom: 4px solid #4CAF50;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.4rem;
+      color: #4CAF50;
+      font-weight: bold;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 3rem 1rem;
+    }
+    form {
+      background-color: #222;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+      max-width: 400px;
+      width: 100%;
+    }
+    form h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      color: #4CAF50;
+    }
+    label {
+      display: block;
+      margin-top: 1.1rem;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
+    select {
+      margin-top: 0.3rem;
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: none;
+      background-color: #333;
+      color: white;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 1.5rem;
+      width: 100%;
+      background-color: #4CAF50;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #3e8e41;
+    }
+    .back-home {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .back-home a {
+      color: #4CAF50;
+      font-size: 1rem;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .back-home a:hover {
+      text-decoration: underline;
+    }
+    #statusMessage {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>FTS Snooker Club</h1>
+  </header>
+  <main>
+    <form id="scoreForm">
+      <h2>Submit Snooker Score</h2>
+
+      <label for="match">Match (e.g. Ben v Conor):</label>
+      <input type="text" name="match" id="match" required />
+
+      <label for="date">Date:</label>
+      <input type="date" name="date" id="date" required />
+
+      <label for="player1">Player 1:</label>
+      <select name="player1" id="player1" required>
+        <option value="" disabled selected>Select player 1</option>
+        <option>Names show up here</option>
+        <option>Name will go here</option>
+        <option>Random name</option>
+      </select>
+
+      <label for="frames1">Player 1 Frames Won:</label>
+      <input type="number" name="frames1" id="frames1" min="0" required />
+
+      <label for="points1">Player 1 Total Points Scored:</label>
+      <input type="number" name="points1" id="points1" min="0" required />
+
+      <label for="highbreak1">Player 1 High Break (20+):</label>
+      <input type="number" name="highbreak1" id="highbreak1" min="20" placeholder="Optional" />
+
+      <label for="player2">Player 2:</label>
+      <select name="player2" id="player2" required>
+        <option value="" disabled selected>Select player 2</option>
+        <option>Players show up here</option>
+        <option>Players will also show up here</option>
+      </select>
+
+      <label for="frames2">Player 2 Frames Won:</label>
+      <input type="number" name="frames2" id="frames2" min="0" required />
+
+      <label for="points2">Player 2 Total Points Scored:</label>
+      <input type="number" name="points2" id="points2" min="0" required />
+
+      <label for="highbreak2">Player 2 High Break (20+):</label>
+      <input type="number" name="highbreak2" id="highbreak2" min="20" placeholder="Optional" />
+
+      <button type="submit">Submit Score</button>
+
+      <p id="statusMessage"></p>
+
+      <div class="back-home">
+        <a href="index.html">← Back to Home</a>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    document.getElementById('scoreForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const url = "Enter App Script URL here";
+
+      const status = document.getElementById('statusMessage');
+      const submitBtn = form.querySelector("button[type='submit']");
+      submitBtn.disabled = true;
+      status.style.color = "white";
+      status.textContent = "Submitting...";
+
+      fetch(url, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.text())
+      .then(text => {
+        if (text.toLowerCase().includes("success")) {
+          status.style.color = "lightgreen";
+          status.textContent = "✅ Score submitted successfully!";
+          form.reset();
+        } else {
+          throw new Error(text);
+        }
+      })
+      .catch(err => {
+        status.style.color = "red";
+        status.textContent = "❌ Error submitting score: " + err.message;
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+      });
+    });
+  </script>
+</body>
+</html>
