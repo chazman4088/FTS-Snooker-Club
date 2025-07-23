@@ -1,0 +1,64 @@
+/* Base reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Page background and text */
+body {
+  background-color: #003300;    /* Deep Fitz green */
+  color: #ffd700;               /* Fitz gold */
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header styling */
+header {
+  background-color: #004400;    /* Slightly lighter green */
+  padding: 20px 0;
+  text-align: center;
+}
+
+header h1 {
+  color: #ffd700;
+  font-size: 2.5rem;
+}
+
+/* Centered container for buttons */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 40px;
+}
+
+/* Button wrapper */
+.center-button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Button styling */
+.btn {
+  display: inline-block;
+  background-color: #ffd700;    /* Fitz gold */
+  color: #003300;               /* Fitz green */
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hover effect */
+.btn:hover {
+  background-color: #003300;    /* Invert to green */
+  color: #ffd700;               /* Invert to gold */
+}
