@@ -5,17 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Summer Snooker Ladder</title>
   <style>
+    /* Reset & Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
-      font-family: Arial, sans-serif;
-      background-color: #111;
-      color: white;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #112216;
+      color: #B2935C;
       margin: 0;
       padding: 20px;
       text-align: center;
     }
+
+    /* Heading */
     h1 {
       margin-bottom: 20px;
+      color: #B2935C;
     }
+
+    /* Table */
     table {
       margin: 0 auto;
       border-collapse: collapse;
@@ -24,31 +35,37 @@
     }
     th, td {
       padding: 12px 16px;
-      border-bottom: 1px solid #444;
+      border-bottom: 1px solid #333333;
     }
     th {
-      background-color: #4CAF50;
+      background-color: #000000;
       font-size: 18px;
+      color: #B2935C;
     }
     td {
       font-size: 16px;
+      color: #B2935C;
     }
     tr:nth-child(even) {
-      background-color: #1a1a1a;
+      background-color: #0a150a;
     }
+
+    /* Back to Home button */
     .back-btn {
       display: inline-block;
       margin-top: 20px;
       padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
+      background-color: #000000;
+      color: #B2935C;
       text-decoration: none;
-      border-radius: 6px;
+      border-radius: 20px;
+      transition: background-color 0.2s ease;
     }
     .back-btn:hover {
-      background-color: #45a049;
+      background-color: #333333;
     }
-    /* modal */
+
+    /* Player Info Modal */
     #playerModal {
       display: none;
       position: fixed;
@@ -58,34 +75,46 @@
       justify-content: center;
     }
     #playerModal .modal-content {
-      background: #222;
+      background: #000000;
       padding: 20px;
-      border-radius: 8px;
+      border-radius: 20px;
       min-width: 280px;
-      color: white;
+      color: #B2935C;
       text-align: left;
     }
     #playerModal button {
       margin-top: 10px;
       padding: 6px 12px;
-      background: #4CAF50;
-      color: white;
+      background: #000000;
+      color: #B2935C;
       border: none;
-      border-radius: 4px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
     }
+    #playerModal button:hover {
+      background: #333333;
+    }
+
     /* XP bar */
     .xp-bar {
-      background: #444;
+      background: #333333;
       border-radius: 4px;
       overflow: hidden;
       height: 16px;
       margin: 4px 0 10px;
     }
     .xp-fill {
-      background: #4CAF50;
+      background: #B2935C;
       height: 100%;
       width: 0%;
       transition: width 0.3s ease;
+    }
+
+    /* Player name clickable */
+    .playerName {
+      cursor: pointer;
+      color: #B2935C;
     }
   </style>
 </head>
@@ -127,7 +156,6 @@
   <script>
     const API = 'Enter App Script URL here';
     
-    // XP thresholds per level: level1=50,2=100,3=150,...
     function getLevelInfo(xp) {
       const level = Math.floor(xp/50) + 1;
       const prevReq = 50*(level-1);
@@ -145,9 +173,7 @@
       tbody.innerHTML = players.map((p,i) => `
         <tr>
           <td>${i+1}</td>
-          <td class="playerName" data-name="${p.name}" style="cursor:pointer; color:#4CAF50;">
-            ${p.name}
-          </td>
+          <td class="playerName" data-name="${p.name}">${p.name}</td>
           <td>${p.wins}</td>
           <td>${p.losses}</td>
           <td>${p.handicap}</td>
@@ -173,7 +199,7 @@
               document.getElementById('modalAvg').textContent = stats.avgPointsPerFrame.toFixed(1);
               const { level, progress } = getLevelInfo(stats.xp);
               document.getElementById('modalXPBar').style.width = progress + '%';
-              document.getElementById('modalXPText').textContent = 
+              document.getElementById('modalXPText').textContent =
                 `Lvl ${level} (${stats.xp} XP)`;
             })
             .catch(console.error);
@@ -187,7 +213,7 @@
 
     function loadLeaderboard() {
       const script = document.createElement('script');
-      script.src = API+'?callback=showLeaderboard';
+      script.src = API + '?callback=showLeaderboard';
       document.body.appendChild(script);
     }
 
