@@ -3,77 +3,83 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Challenge Result – FTS Snooker Club</title>
+  <title>Challenge a Player – FTS Snooker Club</title>
   <style>
-    :root {
-      --page-bg:      #112216;
-      --text-color:   #B2935C;
-      --font-stack:   'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      --heading-size: 2.5rem;
-      --message-size: 1.2rem;
-    }
-
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background-color: var(--page-bg);
-      color: var(--text-color);
-      font-family: var(--font-stack);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    h1 {
-      font-size: var(--heading-size);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-color);
-    }
-
-    p {
-      font-size: var(--message-size);
-      margin-top: 1rem;
-      color: var(--text-color);
-    }
+    /* … your existing CSS (no changes) … */
   </style>
 </head>
 <body>
-  <h1>Submitting Challenge...</h1>
-  <p id="result">Please wait...</p>
+  <header>
+    <h1>FTS Snooker Club</h1>
+  </header>
+
+  <main>
+    <!-- ← changed: now GET→challengeresult.html instead of POST→AppsScript -->
+    <form id="challengeForm"
+          method="GET"
+          action="challengeresult.html">
+      <h2>Challenge a Player</h2>
+
+      <!-- tell the result page we’re adding a challenge -->
+      <input type="hidden" name="action" value="add">
+
+      <label for="player">Select Player to Challenge:</label>
+      <select name="player" id="player" required>
+        <option value="" disabled selected>Select a player</option>
+        <option>Joe Biden</option>
+        <option>Barrack Obama</option>
+        <option>George W. Bush</option>
+        <option>Bill Clinton</option>
+      </select>
+
+      <label for="challenger">Enter Your Name:</label>
+      <select name="challenger" id="challenger" required>
+        <option value="" disabled selected>Select your name</option>
+        <option>Joe Biden</option>
+        <option>Barrack Obama</option>
+        <option>George W. Bush</option>
+        <option>Bill Clinton</option>
+      </select>
+
+      <button type="submit">Submit Challenge</button>
+    </form>
+
+    <div class="table-wrapper">
+      <table id="challengeTable">
+        <!-- … existing table markup … -->
+      </table>
+    </div>
+  </main>
+
+  <a href="index.html" class="back-btn">Back to Home</a>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const formData = new FormData();
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzLrFdw7WODQKWziEycwctCh4YNet6L3qefUIIbYragmEe6gt2iS_zh6Dm31IPcBYaYKQ/exec";
+    let challengeData = [];
 
-    for (const [key, value] of params.entries()) {
-      formData.append(key, value);
+    function formatDateString(dateStr) { /* … */ }
+    function clearChallenge(player, challenger) { /* … */ }
+
+    function showChallenges(data) { /* … */ }
+
+    function loadChallenges() {
+      const script = document.createElement("script");
+      script.src = `${scriptURL}?callback=showChallenges`;
+      document.body.appendChild(script);
     }
 
-    fetch('https://script.google.com/macros/s/AKfycbzLrFdw7WODQKWziEycwctCh4YNet6L3qefUIIbYragmEe6gt2iS_zh6Dm31IPcBYaYKQ/exec', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => response.text())
-    .then(text => {
-      document.getElementById('result').textContent = text;
-      setTimeout(() => {
-        window.location.href = 'challenge.html';
-      }, 5000);
-    })
-    .catch(() => {
-      document.getElementById('result').textContent = 'An error occurred. Please try again.';
-      setTimeout(() => {
-        window.location.href = 'challenge.html';
-      }, 5000);
-    });
+    window.onload = () => {
+      loadChallenges();
+
+      // keep your duplicate‐challenge check
+      document.querySelector("#challengeForm").addEventListener("submit", e => {
+        const selectedPlayer = document.getElementById("player").value;
+        if (challengeData.some(c => c.player === selectedPlayer)) {
+          const ok = confirm(`${selectedPlayer} has already been challenged. Proceed anyway?`);
+          if (!ok) e.preventDefault();
+        }
+      });
+    };
   </script>
 </body>
 </html>
