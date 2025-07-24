@@ -141,9 +141,10 @@
       <label for="player1">Player 1:</label>
       <select name="player1" id="player1" required>
         <option value="" disabled selected>Select player 1</option>
-        <option>Names show up here</option>
-        <option>Name will go here</option>
-        <option>Random name</option>
+        <option>Joe Biden</option>
+        <option>Barrack Obama</option>
+        <option>George W. Bush</option>
+        <option>Bill Clinton</option>
       </select>
 
       <label for="frames1">Player 1 Frames Won:</label>
@@ -158,8 +159,10 @@
       <label for="player2">Player 2:</label>
       <select name="player2" id="player2" required>
         <option value="" disabled selected>Select player 2</option>
-        <option>Players show up here</option>
-        <option>Players will also show up here</option>
+        <option>Joe Biden</option>
+        <option>Barrack Obama</option>
+        <option>George W. Bush</option>
+        <option>Bill Clinton</option>
       </select>
 
       <label for="frames2">Player 2 Frames Won:</label>
@@ -185,7 +188,7 @@
       e.preventDefault();
       const form = e.target;
       const formData = new FormData(form);
-      const url = "Enter App Script URL here";
+      const url = "https://script.google.com/macros/s/AKfycbyiA0uD_JCZln32k-ZQiSdyz3cisV-jT0NA1dAMwD-gGQz3jpGMcIr-8Ysw057LNs2cIg/exec";
 
       const status = document.getElementById('statusMessage');
       const submitBtn = form.querySelector("button[type='submit']");
