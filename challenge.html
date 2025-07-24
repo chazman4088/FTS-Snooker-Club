@@ -184,8 +184,14 @@
   </header>
 
   <main>
-    <form method="GET" action="challengeresult.html">
+    <!-- point the form at your Apps Script endpoint -->
+    <form id="challengeForm"
+          method="POST"
+          action="https://script.google.com/macros/s/AKfycbzLrFdw7WODQKWziEycwctCh4YNet6L3qefUIIbYragmEe6gt2iS_zh6Dm31IPcBYaYKQ/exec">
       <h2>Challenge a Player</h2>
+
+      <!-- tell the script we're adding a new challenge -->
+      <input type="hidden" name="action" value="add">
 
       <label for="player">Select Player to Challenge:</label>
       <select name="player" id="player" required>
@@ -294,11 +300,9 @@
     window.onload = () => {
       loadChallenges();
 
-      document.querySelector("form").addEventListener("submit", e => {
+      document.querySelector("#challengeForm").addEventListener("submit", e => {
         const selectedPlayer = document.getElementById("player").value;
-        const alreadyChallenged = challengeData
-          .some(c => c.player === selectedPlayer);
-        if (alreadyChallenged) {
+        if (challengeData.some(c => c.player === selectedPlayer)) {
           const ok = confirm(`${selectedPlayer} has already been challenged. Proceed anyway?`);
           if (!ok) e.preventDefault();
         }
