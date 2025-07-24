@@ -5,73 +5,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Challenge a Player – FTS Snooker Club</title>
   <style>
-    /* Base Reset */
-    * {
+    :root {
+      --page-bg:      #112216;
+      --form-bg:      #000000;
+      --input-bg:     #112216;
+      --btn-bg:       #000000;
+      --btn-text:     #B2935C;
+      --btn-hover:    #333333;
+      --border-color: #333333;
+      --radius-pill:  20px;
+      --radius-sm:    8px;
+      --font-stack:   'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --spacing:      1rem;
+    }
+
+    *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    /* Page Background & Fonts */
     body {
-      background: linear-gradient(to bottom right, #002b00, #003300);
-      color: #f5c700;
-      font-family: "Georgia", serif;
+      background-color: var(--page-bg);
+      color: var(--btn-text);
+      font-family: var(--font-stack);
       display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
 
-    /* Header */
     header {
-      background: linear-gradient(to bottom, #004400, #003300);
-      padding: 30px 0;
+      background-color: var(--page-bg);
       text-align: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-    }
-    header h1 {
-      font-size: 3rem;
-      color: #f5c700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
+      padding: 30px 0 10px;
     }
 
-    /* Main Container */
+    header h1 {
+      font-size: 2.5rem;
+      color: var(--btn-text);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
     main {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 3rem 1rem;
+      padding: 2rem 1rem 1rem;
     }
 
-    /* Form */
     form {
-      background: #004400;
+      background-color: var(--form-bg);
       padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(245, 199, 0, 0.5);
+      border-radius: var(--radius-pill);
+      box-shadow: 0 0 20px rgba(178, 147, 92, 0.4);
       max-width: 400px;
       width: 100%;
       margin-bottom: 2rem;
     }
+
     form h2 {
       text-align: center;
       margin-bottom: 1.5rem;
       font-weight: 700;
-      color: #f5c700;
+      color: var(--btn-text);
     }
 
-    /* Labels */
     label {
       display: block;
-      margin-top: 1.1rem;
+      margin-top: var(--spacing);
       font-weight: 600;
       font-size: 1rem;
-      color: #f5c700;
+      color: var(--btn-text);
     }
 
-    /* Inputs & Select */
     input[type="text"],
     input[type="date"],
     input[type="number"],
@@ -79,93 +87,93 @@
       margin-top: 0.3rem;
       width: 100%;
       padding: 8px 10px;
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       border: none;
-      background-color: #003300;
-      color: #f5c700;
+      background-color: var(--input-bg);
+      color: var(--btn-text);
       font-size: 1rem;
     }
 
-    /* Submit Button */
     button {
       margin-top: 2rem;
       width: 100%;
-      background: linear-gradient(to bottom, #f5c700, #d4af37);
-      border: 2px solid #f5c700;
+      background-color: var(--btn-bg);
+      border: 2px solid var(--btn-bg);
       padding: 12px;
-      border-radius: 10px;
+      border-radius: var(--radius-pill);
       font-size: 1.2rem;
       font-weight: 700;
-      color: #003300;
+      color: var(--btn-text);
       cursor: pointer;
-      transition: all 0.3s ease-in-out;
+      transition: background-color 0.3s ease, transform 0.3s ease;
     }
+
     button:hover {
-      background: linear-gradient(to bottom, #003300, #002400);
-      color: #f5c700;
+      background-color: var(--btn-hover);
       transform: scale(1.05);
     }
 
-    /* Table Wrapper */
     .table-wrapper {
       width: 100%;
       overflow-x: auto;
-      display: block;
     }
+
     table {
       border-collapse: collapse;
-      margin: 15px auto 0;
+      margin: 1rem auto 0;
       width: 100%;
       min-width: 600px;
       max-width: 800px;
     }
+
     th, td {
-      border: 1px solid #444;
+      border: 1px solid var(--border-color);
       padding: 10px;
       text-align: left;
-      color: #f5c700;
-    }
-    th {
-      background-color: #003300;
-    }
-    tr:nth-child(even) {
-      background-color: #002900;
+      color: var(--btn-text);
     }
 
-    /* Clear Button */
+    th {
+      background-color: var(--form-bg);
+    }
+
+    tr:nth-child(even) {
+      background-color: #0a150a;
+    }
+
     .clear-btn {
-      background: #e53935;
-      color: #f5c700;
+      background-color: #e53935;
+      color: var(--btn-text);
       border: none;
       padding: 6px 10px;
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 700;
       transition: background-color 0.3s ease, transform 0.3s ease;
     }
+
     .clear-btn:hover {
-      background: #c62828;
+      background-color: #c62828;
       transform: scale(1.05);
     }
 
-    /* Back to Home */
     .back-btn {
       display: inline-block;
-      margin: 0 auto 20px;
-      background: linear-gradient(to bottom, #f5c700, #d4af37);
-      border: 2px solid #f5c700;
+      margin: 1rem auto 2rem;
+      background-color: var(--btn-bg);
+      border: 2px solid var(--btn-bg);
       padding: 10px 20px;
-      border-radius: 10px;
+      border-radius: var(--radius-pill);
       font-size: 1rem;
       font-weight: 700;
-      color: #003300;
+      color: var(--btn-text);
       text-decoration: none;
       text-align: center;
-      transition: all 0.3s ease-in-out;
+      transition: background-color 0.3s ease, transform 0.3s ease;
     }
+
     .back-btn:hover {
-      background: linear-gradient(to bottom, #003300, #002400);
-      color: #f5c700;
+      background-color: var(--btn-hover);
       transform: scale(1.05);
     }
   </style>
@@ -282,10 +290,8 @@
 
       document.querySelector("form").addEventListener("submit", e => {
         const selectedPlayer = document.getElementById("player").value;
-        const thisWeek = new Date();
-        const startOfWeek = new Date(thisWeek);
-        startOfWeek.setDate(thisWeek.getDate() - thisWeek.getDay());
-        const alreadyChallenged = challengeData.filter(c => c.player === selectedPlayer).length > 0;
+        const alreadyChallenged = challengeData
+          .some(c => c.player === selectedPlayer);
         if (alreadyChallenged) {
           const ok = confirm(`${selectedPlayer} has already been challenged. Proceed anyway?`);
           if (!ok) e.preventDefault();
