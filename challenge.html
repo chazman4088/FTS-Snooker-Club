@@ -80,9 +80,6 @@
       color: var(--btn-text);
     }
 
-    input[type="text"],
-    input[type="date"],
-    input[type="number"],
     select {
       margin-top: 0.3rem;
       width: 100%;
@@ -111,6 +108,14 @@
     button:hover {
       background-color: var(--btn-hover);
       transform: scale(1.05);
+    }
+
+    /* new status text */
+    #submitStatus {
+      text-align: center;
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      color: var(--btn-text);
     }
 
     .table-wrapper {
@@ -184,13 +189,8 @@
   </header>
 
   <main>
-    <!-- point the form at your Apps Script endpoint -->
-    <form id="challengeForm"
-          method="POST"
-          action="https://script.google.com/macros/s/AKfycbzLrFdw7WODQKWziEycwctCh4YNet6L3qefUIIbYragmEe6gt2iS_zh6Dm31IPcBYaYKQ/exec">
+    <form id="challengeForm" method="POST" action="https://script.google.com/macros/s/AKfycbzLrFdw7WODQKWziEycwctCh4YNet6L3qefUIIbYragmEe6gt2iS_zh6Dm31IPcBYaYKQ/exec">
       <h2>Challenge a Player</h2>
-
-      <!-- tell the script we're adding a new challenge -->
       <input type="hidden" name="action" value="add">
 
       <label for="player">Select Player to Challenge:</label>
@@ -212,6 +212,9 @@
       </select>
 
       <button type="submit">Submit Challenge</button>
+
+      <!-- new status element -->
+      <p id="submitStatus"></p>
     </form>
 
     <div class="table-wrapper">
@@ -243,10 +246,11 @@
       if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) return dateStr;
       const d = new Date(dateStr);
       if (isNaN(d)) return "";
-      const day = String(d.getDate()).padStart(2, '0');
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const year = d.getFullYear();
-      return `${day}/${month}/${year}`;
+      return [
+        String(d.getDate()).padStart(2,'0'),
+        String(d.getMonth()+1).padStart(2,'0'),
+        d.getFullYear()
+      ].join('/');
     }
 
     function clearChallenge(player, challenger) {
@@ -255,40 +259,40 @@
       formData.append("player", player);
       formData.append("challenger", challenger);
 
-      fetch(scriptURL, {
-        method: "POST",
-        body: formData
-      })
-      .then(() => loadChallenges())
-      .catch(() => alert("Error deleting challenge."));
+      fetch(scriptURL, { method: "POST", body: formData })
+        .then(() => loadChallenges())
+        .catch(() => alert("Error deleting challenge."));
     }
 
     function showChallenges(data) {
       challengeData = data;
       const tbody = document.querySelector("#challengeTable tbody");
-      if (!Array.isArray(data) || data.length === 0) {
+      if (!Array.isArray(data) || !data.length) {
         tbody.innerHTML = "<tr><td colspan='5'>No challenges found</td></tr>";
         return;
       }
-      const rows = data.map(row => {
-        const dueDateStr = formatDateString(row.dueDate);
-        const [day, month, year] = dueDateStr.split("/");
-        const dueDate = new Date(`${year}-${month}-${day}`);
-        const diffDays = Math.ceil((dueDate - new Date()) / (1000*60*60*24));
-        let dueStyle = "";
-        if (diffDays < 0) dueStyle = 'style="background-color:#b71c1c;"';
-        else if (diffDays <= 2) dueStyle = 'style="background-color:#ff9800;"';
+      tbody.innerHTML = data.map(row => {
+        const due = formatDateString(row.dueDate);
+        const [dd,mm,yyyy] = due.split("/");
+        const diff = Math.ceil((new Date(`${yyyy}-${mm}-${dd}`) - new Date())/(1000*60*60*24));
+        let style = "";
+        if (diff < 0) style = ' style="background-color:#b71c1c;"';
+        else if (diff <=2) style = ' style="background-color:#ff9800;"';
+
         return `
           <tr>
             <td>${row.player}</td>
             <td>${row.challengedBy}</td>
             <td>${formatDateString(row.date)}</td>
-            <td ${dueStyle}>${dueDateStr}</td>
-            <td><button class="clear-btn" onclick="clearChallenge('${row.player}','${row.challengedBy}')">Delete</button></td>
-          </tr>
-        `;
-      });
-      tbody.innerHTML = rows.join("");
+            <td${style}>${due}</td>
+            <td>
+              <button class="clear-btn"
+                      onclick="clearChallenge('${row.player}','${row.challengedBy}')">
+                Delete
+              </button>
+            </td>
+          </tr>`;
+      }).join("");
     }
 
     function loadChallenges() {
@@ -300,12 +304,38 @@
     window.onload = () => {
       loadChallenges();
 
-      document.querySelector("#challengeForm").addEventListener("submit", e => {
-        const selectedPlayer = document.getElementById("player").value;
-        if (challengeData.some(c => c.player === selectedPlayer)) {
-          const ok = confirm(`${selectedPlayer} has already been challenged. Proceed anyway?`);
-          if (!ok) e.preventDefault();
+      const form = document.getElementById("challengeForm");
+      form.addEventListener("submit", e => {
+        e.preventDefault();
+
+        // duplicate‐challenge warning
+        const player = form.player.value;
+        if (challengeData.some(c => c.player === player)) {
+          if (!confirm(`${player} has already been challenged. Proceed anyway?`)) {
+            return;
+          }
         }
+
+        // show immediate feedback
+        const statusEl = document.getElementById("submitStatus");
+        statusEl.textContent = "Submitting...";
+
+        // submit via fetch
+        const formData = new FormData(form);
+        fetch(scriptURL, { method: "POST", body: formData })
+          .then(r => r.json())
+          .then(resp => {
+            if (resp.status === "success") {
+              statusEl.textContent = "Challenge submitted successfully!";
+              form.reset();
+              loadChallenges();
+            } else {
+              statusEl.textContent = "Error: " + (resp.error || "Unknown error");
+            }
+          })
+          .catch(() => {
+            statusEl.textContent = "Error submitting challenge.";
+          });
       });
     };
   </script>
