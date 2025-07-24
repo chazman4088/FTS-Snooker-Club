@@ -5,38 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Challenge Result – FTS Snooker Club</title>
   <style>
-    /* Base Reset */
-    * {
+    :root {
+      --page-bg:      #112216;
+      --text-color:   #B2935C;
+      --font-stack:   'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --heading-size: 2.5rem;
+      --message-size: 1.2rem;
+    }
+
+    *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    /* Page Background & Typography */
     body {
-      background: linear-gradient(to bottom right, #002b00, #003300);
-      color: #f5c700;
-      font-family: "Georgia", serif;
+      background-color: var(--page-bg);
+      color: var(--text-color);
+      font-family: var(--font-stack);
       display: flex;
       justify-content: center;
       align-items: center;
       text-align: center;
       min-height: 100vh;
+      padding: 20px;
     }
 
-    /* Heading */
     h1 {
-      font-size: 3rem;
+      font-size: var(--heading-size);
       text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: #f5c700;
+      letter-spacing: 1px;
+      color: var(--text-color);
     }
 
-    /* Message */
     p {
-      font-size: 1.2rem;
+      font-size: var(--message-size);
       margin-top: 1rem;
-      color: #f5c700;
+      color: var(--text-color);
     }
   </style>
 </head>
