@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard – FTS Snooker Club</title>
+  <title>Dashboard – Fitz Snooker Club</title>
   <style>
     :root {
       --page-bg:      #112216;
@@ -50,6 +50,14 @@
       color: var(--btn-text);
     }
 
+    /* ===== New: constrain header logo size ===== */
+    header img {
+      max-width: 250px;  /* adjust as needed to match index.html */
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
     main {
       flex: 1;
       display: flex;
@@ -91,9 +99,11 @@
     }
   </style>
 </head>
-  <header>
-    <img src="FTS Snooker Club Logo.jpg" alt="FTS Snooker Club Logo">
-  </header>
+
+<header>
+  <img src="FTS Snooker Club Logo.jpg" alt="FTS Snooker Club Logo">
+</header>
+
 <body>
   <main>
     <div class="center-button">
